@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "../supabase"
 
 export default function Tools() {
   const [cost, setCost] = useState("")
   const [selling, setSelling] = useState("")
   const [quantity, setQuantity] = useState("1")
   const [result, setResult] = useState(null)
+  const [healthResult, setHealthResult] = useState(null)
+  const [healthLoading, setHealthLoading] = useState(false)
 
   function checkProfit() {
     const c = parseFloat(cost)
@@ -14,6 +17,80 @@ export default function Tools() {
     const profit = (s - c) * q
     const margin = ((s - c) / s) * 100
     setResult({ profit, margin })
+  }
+
+  async function runHealthCheck() {
+    setHealthLoading(true)
+    setHealthResult(null)
+
+    // Fetch last 30 days of transactions
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+    const { data: transactions } = await supabase
+      .from("transactions")
+      .select("*")
+      .gte("created_at", thirtyDaysAgo.toISOString())
+
+    if (!transactions || transactions.length === 0) {
+      setHealthResult("No transactions found in the last 30 days. Start recording your income and expenses in the Tracker first!")
+      setHealthLoading(false)
+      return
+    }
+
+    // Summarise the data
+    const income = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0)
+    const expenses = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0)
+    const net = income - expenses
+    const incomeCount = transactions.filter(t => t.type === "income").length
+    const expenseCount = transactions.filter(t => t.type === "expense").length
+
+    // Group by category
+    const categories = {}
+    transactions.forEach(t => {
+      if (!categories[t.category]) categories[t.category] = 0
+      categories[t.category] += Number(t.amount)
+    })
+    const categoryList = Object.entries(categories)
+      .map(([cat, amt]) => `${cat}: GHS ${amt}`)
+      .join(", ")
+
+    const prompt = `You are BizBuddy, a friendly business health advisor for small Ghanaian businesses.
+
+Here is a summary of this business's last 30 days:
+- Total Income: GHS ${income.toFixed(2)} (${incomeCount} transactions)
+- Total Expenses: GHS ${expenses.toFixed(2)} (${expenseCount} transactions)
+- Net Profit: GHS ${net.toFixed(2)}
+- Categories: ${categoryList}
+
+Give a friendly, encouraging business health check in 3 short points:
+1. How healthy is the business right now
+2. One thing they are doing well
+3. One practical tip to improve profit
+
+Keep it simple, warm and relevant to a Ghanaian small business owner. Use GHS for currency.`
+
+    try {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_GROQ_KEY}`
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          messages: [{ role: "user", content: prompt }]
+        })
+      })
+
+      const data = await response.json()
+      const reply = data.choices[0].message.content
+      setHealthResult(reply)
+    } catch (e) {
+      setHealthResult("Couldn't connect to AI. Please try again.")
+    }
+
+    setHealthLoading(false)
   }
 
   return (
@@ -102,9 +179,19 @@ export default function Tools() {
           <p className="text-gray-500 text-sm text-center mb-4">
             I'll look at your recent income and expenses to give you personalised tips on how to grow and save money.
           </p>
-          <button className="w-full bg-gold/20 text-gold font-semibold rounded-xl py-3">
-            Coming soon — add records first!
+          <button
+            onClick={runHealthCheck}
+            disabled={healthLoading}
+            className="w-full bg-gold text-white font-semibold rounded-xl py-3"
+          >
+            {healthLoading ? "Analyzing records..." : "Run Health Check"}
           </button>
+
+          {healthResult && (
+            <div className="mt-4 bg-amber-50 rounded-xl p-4">
+              <p className="text-sm text-gray-700 whitespace-pre-line">{healthResult}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
