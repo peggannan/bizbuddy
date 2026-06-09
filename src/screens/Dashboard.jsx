@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react"
 import { supabase } from "../supabase"
 
-export default function Dashboard() {
+export default function Dashboard({user}) {
   const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(5)
+      const { data } = await supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(5)
       if (data) setTransactions(data)
     }
     load()
