@@ -30,11 +30,13 @@ export default function App() {
   }, [])
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f0] dark:bg-[#1a1a1a]">
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f0] dark:bg-[#0D1F1A]">
       <div className="text-center">
-        <div className="text-5xl mb-3">💼</div>
+        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
+          <span className="text-3xl">💼</span>
+        </div>
         <p className="text-primary font-bold text-xl">BizBuddy</p>
-        <p className="text-gray-400 text-sm">Loading...</p>
+        <p className="text-gray-400 text-sm mt-1">Loading...</p>
       </div>
     </div>
   )
@@ -58,27 +60,27 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0] dark:bg-[#1a1a1a]">
-      {/* Desktop sidebar + mobile bottom nav layout */}
+    <div className="min-h-screen bg-[#f5f5f0] dark:bg-[#0D1F1A]">
       <div className="flex min-h-screen max-w-6xl mx-auto">
 
-        {/* Desktop sidebar — hidden on mobile */}
-        <div className="hidden md:flex flex-col w-56 bg-white dark:bg-[#242424] border-r border-gray-100 dark:border-gray-800 fixed h-full py-6 px-4">
-          <div className="mb-8 px-2">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">💼</span>
-              <span className="text-xl font-bold text-primary">BizBuddy</span>
+        {/* Desktop sidebar */}
+        <div className="hidden md:flex flex-col w-60 bg-white dark:bg-[#0F2420] border-r border-gray-100 dark:border-[#1E3D32] fixed h-full py-6 px-4">
+          <div className="mb-8 px-2 flex items-center gap-3">
+            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
+              <span className="text-lg">💼</span>
             </div>
+            <span className="text-xl font-bold text-primary dark:text-[#1DB954]">BizBuddy</span>
           </div>
+
           <nav className="flex-1 space-y-1">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setScreen(tab.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   screen === tab.id
-                    ? "bg-primary text-white"
-                    : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    ? "bg-primary dark:bg-[#1E3D32] text-white dark:text-[#1DB954]"
+                    : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#132B24]"
                 }`}
               >
                 <FontAwesomeIcon icon={tab.icon} />
@@ -86,10 +88,10 @@ export default function App() {
               </button>
             ))}
           </nav>
-          {/* Theme toggle on sidebar */}
+
           <button
             onClick={() => setDark(!dark)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#132B24] transition-all"
           >
             <FontAwesomeIcon icon={dark ? faSun : faMoon} />
             {dark ? "Light Mode" : "Dark Mode"}
@@ -97,45 +99,46 @@ export default function App() {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 md:ml-56 pb-20 md:pb-6">
-          {/* Top bar — desktop only */}
-          <div className="hidden md:flex items-center justify-between px-6 py-4 bg-white dark:bg-[#242424] border-b border-gray-100 dark:border-gray-800">
-            <h1 className="text-lg font-bold text-gray-800 dark:text-white capitalize">{screen}</h1>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {user?.user_metadata?.name || user?.email}
-              </span>
-            </div>
-          </div>
+        <div className="flex-1 md:ml-60 pb-20 md:pb-0">
 
           {/* Mobile top bar */}
-          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#242424] border-b border-gray-100 dark:border-gray-800">
+          <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0F2420] border-b border-gray-100 dark:border-[#1E3D32]">
             <div className="flex items-center gap-2">
-              <span className="text-xl">💼</span>
-              <span className="font-bold text-primary">BizBuddy</span>
+              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-sm">💼</span>
+              </div>
+              <span className="font-bold text-primary dark:text-[#1DB954]">BizBuddy</span>
             </div>
             <button
               onClick={() => setDark(!dark)}
-              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="p-2 rounded-xl text-gray-500 dark:text-[#1DB954] hover:bg-gray-100 dark:hover:bg-[#132B24]"
             >
               <FontAwesomeIcon icon={dark ? faSun : faMoon} />
             </button>
           </div>
 
-          <div className="p-0 md:p-2">
-            {screens[screen]}
+          {/* Desktop top bar */}
+          <div className="hidden md:flex items-center justify-between px-6 py-4 bg-white dark:bg-[#0F2420] border-b border-gray-100 dark:border-[#1E3D32]">
+            <h1 className="text-lg font-bold text-gray-800 dark:text-white capitalize">{screen}</h1>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              👋 {user?.user_metadata?.name || user?.email}
+            </span>
           </div>
+
+          {screens[screen]}
         </div>
       </div>
 
       {/* Mobile bottom nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#242424] border-t border-gray-200 dark:border-gray-800 flex justify-around py-2 z-50">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#0F2420] border-t border-gray-200 dark:border-[#1E3D32] flex justify-around py-2 z-50">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setScreen(tab.id)}
             className={`flex flex-col items-center text-xs px-3 py-1 rounded-lg transition-colors ${
-              screen === tab.id ? "text-primary font-bold" : "text-gray-400"
+              screen === tab.id
+                ? "text-primary dark:text-[#1DB954] font-bold"
+                : "text-gray-400 dark:text-gray-600"
             }`}
           >
             <FontAwesomeIcon icon={tab.icon} className="text-lg mb-1" />

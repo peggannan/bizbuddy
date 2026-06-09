@@ -8,5 +8,10 @@ body {
 }
 
 .dark body {
-  background-color: #1a1a1a;
+  background-color: #0D1F1A;
+}
+
+/* Smooth theme transition */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.1s ease;
 }
