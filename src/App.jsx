@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faChartPie, faMoneyBillWave, faWrench, faUser, faComments, faMoon, faSun } from "@fortawesome/free-solid-svg-icons"
+import { faChartPie, faMoneyBillWave, faWrench, faUser, faComments, faMoon, faSun, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 import { useTranslation } from "react-i18next"
 import { supabase } from "./supabase"
 import { useTheme } from "./ThemeContext"
@@ -12,7 +12,6 @@ import Chat from "./screens/Chat"
 import Auth from "./screens/Auth"
 import Onboarding from "./screens/Onboarding"
 import Reports from "./screens/Reports"
-import { faChartPie, faMoneyBillWave, faWrench, faUser, faComments, faMoon, faSun, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 
 export default function App() {
   const [screen, setScreen] = useState("dashboard")
