@@ -10,6 +10,9 @@ import Tools from "./screens/Tools"
 import Profile from "./screens/Profile"
 import Chat from "./screens/Chat"
 import Auth from "./screens/Auth"
+import Onboarding from "./screens/Onboarding"
+import Reports from "./screens/Reports"
+import { faChartPie, faMoneyBillWave, faWrench, faUser, faComments, faMoon, faSun, faFileAlt } from "@fortawesome/free-solid-svg-icons"
 
 export default function App() {
   const [screen, setScreen] = useState("dashboard")
@@ -17,6 +20,27 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const { t } = useTranslation()
   const { dark, setDark } = useTheme()
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+  return !localStorage.getItem("bizbuddy_onboarded")
+  })
+
+  function completeOnboarding() {
+  localStorage.setItem("bizbuddy_onboarded", "true")
+  setShowOnboarding(false)
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -30,16 +54,23 @@ export default function App() {
   }, [])
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f5f5f0] dark:bg-[#0D1F1A]">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
-          <span className="text-3xl">💼</span>
+    <div className="min-h-screen flex items-center justify-center bg-[#0B1F1E]">
+      <div className="text-center animate-pulse">
+        <div className="w-20 h-20 bg-[#112221] border-2 border-[#2DD4BF]/30 rounded-3xl flex items-center justify-center mx-auto mb-4">
+          <span className="text-4xl">💼</span>
         </div>
-        <p className="text-primary font-bold text-xl">BizBuddy</p>
-        <p className="text-gray-400 text-sm mt-1">Loading...</p>
+        <p className="text-[#2DD4BF] font-bold text-2xl tracking-wide">BizBuddy</p>
+        <p className="text-white/40 text-sm mt-2">Your business companion</p>
+        <div className="flex justify-center gap-1 mt-6">
+          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay: "0ms"}}></div>
+          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay: "150ms"}}></div>
+          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay: "300ms"}}></div>
+        </div>
       </div>
     </div>
   )
+
+  if (showOnboarding) return <Onboarding onDone={completeOnboarding} />
 
   if (!user) return <Auth onLogin={setUser} />
 
@@ -47,6 +78,7 @@ export default function App() {
     { id: "dashboard", icon: faChartPie, label: t("dashboard") },
     { id: "tracker", icon: faMoneyBillWave, label: t("tracker") },
     { id: "tools", icon: faWrench, label: t("tools") },
+    { id: "reports", icon: faFileAlt, label: "Reports" },
     { id: "chat", icon: faComments, label: t("chat") },
     { id: "profile", icon: faUser, label: t("profile") },
   ]
@@ -55,11 +87,13 @@ export default function App() {
     dashboard: <Dashboard user={user} />,
     tracker: <Tracker user={user} />,
     tools: <Tools user={user} />,
+    reports: <Reports user={user} />,
     chat: <Chat user={user} />,
     profile: <Profile user={user} setScreen={setScreen} />,
   }
 
   return (
+    
     <div className="min-h-screen bg-[#f5f5f0] dark:bg-[#0D1F1A]">
       <div className="flex min-h-screen max-w-6xl mx-auto">
 
@@ -147,5 +181,11 @@ export default function App() {
         ))}
       </div>
     </div>
+    
   )
+  {!isOnline && (
+    <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-yellow-900 text-xs text-center py-1.5 font-medium">
+      📡 You're offline — viewing cached data
+    </div>
+  )}
 }

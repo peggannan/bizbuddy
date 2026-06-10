@@ -4,15 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#1B5E37",
+        primary: "#0D9488",
         gold: "#D4A017",
         dark: {
-          bg: "#0D1F1A",
-          card: "#132B24",
-          nav: "#0F2420",
-          accent: "#1DB954",
-          border: "#1E3D32",
+          bg: "#0B1F1E",
+          card: "#112221",
+          nav: "#0D1A19",
+          accent: "#2DD4BF",
+          border: "#1A3A38",
         }
+      },
+      fontFamily: {
+        mono: ["'Courier New'", "monospace"],
       }
     }
   },
