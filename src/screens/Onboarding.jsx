@@ -1,3 +1,5 @@
+// Onboarding.jsx
+
 import { useState } from "react"
 
 const slides = [

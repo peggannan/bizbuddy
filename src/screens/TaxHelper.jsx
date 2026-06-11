@@ -1,3 +1,5 @@
+// TaxHelper.jsx
+
 export default function TaxHelper({ user }) {
   const bizType = user?.user_metadata?.bizType || "other"
 

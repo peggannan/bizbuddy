@@ -1,5 +1,9 @@
+// Auth.jsx
+
+
 import { useState } from "react"
 import { supabase } from "../supabase"
+import logo from "../assets/hero.png"
 
 export default function Auth({ onLogin }) {
   const [mode, setMode] = useState("login")
@@ -7,6 +11,7 @@ export default function Auth({ onLogin }) {
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
   const [bizType, setBizType] = useState("")
+  const [customBizType, setCustomBizType] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [message, setMessage] = useState("")
@@ -17,10 +22,11 @@ export default function Auth({ onLogin }) {
     setMessage("")
 
     if (mode === "signup") {
+      const businessType = customBizType.trim() || bizType
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name, bizType } }
+        options: { data: { name, bizType: businessType } }
       })
       if (error) setError(error.message)
       else setMessage("Account created! You can now log in.")
@@ -37,10 +43,7 @@ export default function Auth({ onLogin }) {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <span className="text-3xl">💼</span>
-          </div>
-          <h1 className="text-3xl font-bold text-primary">BizBuddy</h1>
+          <img src="./logo-2.png" alt="BizBuddy logo" className="mx-auto h-12 w-40" />
           <p className="text-gray-500 text-sm mt-1">Your Ghanaian business companion</p>
         </div>
 
@@ -65,16 +68,25 @@ export default function Auth({ onLogin }) {
                 <label className="text-sm text-gray-600 mb-1 block">Business Type</label>
                 <select
                   value={bizType}
-                  onChange={e => setBizType(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  onChange={e => { setBizType(e.target.value); setCustomBizType("") }}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm text-black focus:outline-none focus:border-primary"
                 >
                   <option value="">Select type</option>
-                  <option value="trader">Market Trader</option>
-                  <option value="food">Food Vendor</option>
-                  <option value="seamstress">Seamstress</option>
-                  <option value="beauty">Beauty Professional</option>
-                  <option value="other">Other</option>
+                  <option value="Market Trader">Market Trader</option>
+                  <option value="Food Vendor">Food Vendor</option>
+                  <option value="Seamstress">Seamstress</option>
+                  <option value="Beauty Professional">Beauty Professional</option>
+                  <option value="Other">Other</option>
                 </select>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm text-gray-600 mb-1 block">Or type your own business type</label>
+                <input
+                  value={customBizType}
+                  onChange={e => setCustomBizType(e.target.value)}
+                  placeholder="e.g. Shoe maker, event planner"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-black focus:outline-none focus:border-primary"
+                />
               </div>
             </>
           )}
@@ -126,3 +138,4 @@ export default function Auth({ onLogin }) {
     </div>
   )
 }
+

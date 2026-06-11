@@ -1,3 +1,5 @@
+// Trends.jsx
+
 import { useState, useEffect } from "react"
 import { supabase } from "../supabase"
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line } from "recharts"

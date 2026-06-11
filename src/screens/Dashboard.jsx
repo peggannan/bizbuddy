@@ -1,3 +1,5 @@
+// Dashboard.jsx
+
 import { useState, useEffect } from "react"
 import { supabase } from "../supabase"
 import { BarChart, Bar, ResponsiveContainer, Tooltip } from "recharts"

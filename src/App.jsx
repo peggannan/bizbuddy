@@ -1,10 +1,12 @@
+// App.jsx
+
 import { useState, useEffect, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faChartPie, faMoneyBillWave, faWrench, faComments,
   faMoon, faSun, faBars, faTimes, faUser, faFileAlt,
   faBook, faBoxes, faClipboardList, faUsers, faBullseye,
-  faChartLine, faFileInvoice, faCalculator
+  faChartLine, faFileInvoice, faCalculator, faPlus, faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons"
 import { useTranslation } from "react-i18next"
 import { supabase } from "./supabase"
@@ -31,6 +33,7 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("bizbuddy_onboarded"))
   const { t } = useTranslation()
@@ -59,6 +62,19 @@ export default function App() {
   function navigate(s) {
     setScreen(s)
     setMenuOpen(false)
+    setAddMenuOpen(false)
+  }
+
+  async function logout() {
+    setMenuOpen(false)
+    setAddMenuOpen(false)
+    await supabase.auth.signOut()
+  }
+
+  function handleAdd(target) {
+    setScreen(target)
+    setMenuOpen(false)
+    setAddMenuOpen(false)
   }
 
  if (loading) return (
@@ -102,7 +118,7 @@ export default function App() {
     dashboard: <Dashboard user={user} />,
     tracker: <Tracker user={user} />,
     tools: <Tools user={user} />,
-    chat: <Chat user={user} />,
+    chat: <Chat user={user} navigate={navigate} />,
     orders: <Orders user={user} />,
     inventory: <Inventory user={user} />,
     debtbook: <DebtBook user={user} />,
@@ -167,11 +183,16 @@ export default function App() {
             </button>
           ))}
 
-          <div className="mt-auto pt-4 border-t border-gray-100 dark:border-[#1A3A38]">
+          <div className="mt-auto pt-4 border-t border-gray-100 dark:border-[#1A3A38] space-y-2">
             <button onClick={() => setDark(!dark)}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#112221]">
               <FontAwesomeIcon icon={dark ? faSun : faMoon} className="w-4" />
               {dark ? "Light Mode" : "Dark Mode"}
+            </button>
+            <button onClick={logout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[#2B1414]">
+              <FontAwesomeIcon icon={faSignOutAlt} className="w-4" />
+              Log Out
             </button>
           </div>
         </div>
@@ -222,20 +243,58 @@ export default function App() {
                     <FontAwesomeIcon icon={item.icon} className="w-4" />
                     {item.label}
                   </button>
-                ))}
-              </div>
+                ))}                <button onClick={logout}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium mt-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[#2B1414]">
+                  <FontAwesomeIcon icon={faSignOutAlt} className="w-4" />
+                  Log Out
+                </button>              </div>
             </div>
           )}
 
           {/* Desktop top bar */}
           <div className="hidden md:flex items-center justify-between px-6 py-4 bg-white dark:bg-[#0D1A19] border-b border-gray-100 dark:border-[#1A3A38]">
-            <h1 className="text-lg font-bold text-gray-800 dark:text-white">
-              {allNav.find(n => n.id === screen)?.label || "Dashboard"}
-            </h1>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {user?.user_metadata?.name || user?.email}
-            </span>
+            <div>
+              <h1 className="text-lg font-bold text-gray-800 dark:text-white">
+                {allNav.find(n => n.id === screen)?.label || "Dashboard"}
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Access all features quickly with AI guidance.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {user?.user_metadata?.name || user?.email}
+              </span>
+            </div>
           </div>
+
+          {addMenuOpen && screen === "dashboard" && (
+            <div className="md:hidden fixed right-6 bottom-20 z-30 w-64 rounded-3xl bg-white dark:bg-[#0D1A19] border border-gray-200 dark:border-[#1A3A38] shadow-2xl overflow-hidden">
+              <div className="p-4 space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">Quick Add</p>
+                <button onClick={() => handleAdd("tracker")}
+                  className="w-full text-left rounded-2xl px-3 py-3 bg-gray-50 dark:bg-[#112221] hover:bg-gray-100 dark:hover:bg-[#1A3A38] text-sm text-gray-700 dark:text-gray-200">
+                  Add transaction
+                </button>
+                <button onClick={() => handleAdd("orders")}
+                  className="w-full text-left rounded-2xl px-3 py-3 bg-gray-50 dark:bg-[#112221] hover:bg-gray-100 dark:hover:bg-[#1A3A38] text-sm text-gray-700 dark:text-gray-200">
+                  Add new order
+                </button>
+                <button onClick={() => handleAdd("inventory")}
+                  className="w-full text-left rounded-2xl px-3 py-3 bg-gray-50 dark:bg-[#112221] hover:bg-gray-100 dark:hover:bg-[#1A3A38] text-sm text-gray-700 dark:text-gray-200">
+                  Add inventory stock
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Floating Add button (dashboard only) at bottom-right */}
+          {screen === "dashboard" && (
+            <div className="md:hidden fixed right-6 bottom-16 z-40">
+              <button onClick={() => setAddMenuOpen(!addMenuOpen)}
+                className="w-14 h-14 rounded-full flex items-center justify-center bg-primary dark:bg-[#2DD4BF] text-white dark:text-[#0B1F1E] text-xl shadow-2xl border-4 border-white/60 dark:border-black/20">
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+          )}
 
           {screens[screen]}
         </div>
