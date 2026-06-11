@@ -17,6 +17,22 @@ export default function Dashboard({ user }) {
     load()
   }, [])
 
+  const [orders, setOrders] = useState([])
+
+  useEffect(() => {
+    async function loadOrders() {
+      const { data } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("status", "pending")
+        .order("deadline", { ascending: true })
+        .limit(3)
+      if (data) setOrders(data)
+    }
+    loadOrders()
+  }, [])
+
   const income = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + Number(t.amount), 0)
   const expenses = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + Number(t.amount), 0)
   const net = income - expenses
@@ -117,6 +133,30 @@ export default function Dashboard({ user }) {
           ))}
         </div>
       </div>
+
+      {/* Pending Orders */}
+      {orders.length > 0 && (
+        <div className="bg-white dark:bg-[#112221] rounded-2xl p-4 border border-gray-100 dark:border-[#1A3A38]">
+          <div className="flex justify-between items-center mb-3">
+            <p className="font-semibold text-gray-800 dark:text-white text-sm">Pending Orders 📋</p>
+            <span className="text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">{orders.length} pending</span>
+          </div>
+          {orders.map(o => (
+            <div key={o.id} className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-[#1A3A38] last:border-0">
+              <div>
+                <p className="text-sm font-medium dark:text-white">{o.customer_name}</p>
+                <p className="text-xs text-gray-400">{o.description}</p>
+                {o.deadline && (
+                  <p className={`text-xs mt-0.5 ${new Date(o.deadline) < new Date() ? "text-red-400" : "text-gray-400"}`}>
+                    📅 {new Date(o.deadline).toLocaleDateString("en-GH")}
+                  </p>
+                )}
+              </div>
+              <p className="text-sm font-bold text-primary dark:text-[#2DD4BF]">GHS {Number(o.amount).toLocaleString()}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Recent activity */}
       <div className="bg-white dark:bg-[#112221] rounded-2xl p-4 border border-gray-100 dark:border-[#1A3A38]">

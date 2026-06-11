@@ -2,22 +2,22 @@ import { useState } from "react"
 
 const slides = [
   {
-    emoji: "💼",
-    title: "Grow Your Business",
+    icon: "🌍",
+    title: "Grow Your\nBusiness",
     subtitle: "BizBuddy helps market traders, food vendors, seamstresses and beauty professionals track and grow their money",
-    bg: "from-[#0B1F1E] to-[#112221]"
+    bg: "#0B1F1E",
   },
   {
-    emoji: "📊",
-    title: "Track Every Cedi",
-    subtitle: "Record your income and expenses easily. See exactly where your money is going and how much profit you're making",
-    bg: "from-[#112221] to-[#0D1A19]"
+    icon: "🎯",
+    title: "Set Goals,\nHit Targets",
+    subtitle: "Create savings goals for anything — new equipment, emergencies, expansion — and track your progress daily",
+    bg: "#0D1F1C",
   },
   {
-    emoji: "🤖",
-    title: "AI Business Advisor",
-    subtitle: "Get personalised advice from BizBuddy AI. Ask questions in English, Twi, Ga or Ewe — anytime, for free",
-    bg: "from-[#0D1A19] to-[#0B1F1E]"
+    icon: "💬",
+    title: "AI Business\nAdvisor",
+    subtitle: "Ask BizBuddy anything in English, Twi, Ga or Ewe. Get personalised advice based on your real business data",
+    bg: "#0B1E1D",
   }
 ]
 
@@ -32,25 +32,41 @@ export default function Onboarding({ onDone }) {
   const slide = slides[current]
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${slide.bg} flex flex-col items-center justify-between p-8 transition-all duration-500`}>
-      <button onClick={onDone} className="self-end text-white/50 text-sm">Skip</button>
-
-      <div className="flex-1 flex flex-col items-center justify-center text-center max-w-sm">
-        <div className="w-28 h-28 bg-white/10 rounded-3xl flex items-center justify-center text-6xl mb-8 border border-white/20">
-          {slide.emoji}
-        </div>
-        <h1 className="text-3xl font-bold text-white mb-4">{slide.title}</h1>
-        <p className="text-white/60 text-base leading-relaxed">{slide.subtitle}</p>
+    <div className="min-h-screen flex flex-col items-center justify-between p-8 transition-all duration-500"
+      style={{ backgroundColor: slide.bg }}>
+      
+      {/* Skip */}
+      <div className="w-full flex justify-end">
+        <button onClick={onDone} className="text-white/50 text-sm font-medium">Skip</button>
       </div>
 
-      <div className="w-full max-w-sm">
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs w-full">
+        {/* Icon circle */}
+        <div className="w-32 h-32 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-6xl mb-10">
+          {slide.icon}
+        </div>
+        
+        <h1 className="text-4xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
+          {slide.title}
+        </h1>
+        <p className="text-white/60 text-base leading-relaxed">
+          {slide.subtitle}
+        </p>
+      </div>
+
+      {/* Bottom */}
+      <div className="w-full max-w-xs">
+        {/* Dots */}
         <div className="flex justify-center gap-2 mb-8">
           {slides.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all ${i === current ? "w-8 bg-[#2DD4BF]" : "w-2 bg-white/30"}`} />
+            <div key={i} onClick={() => setCurrent(i)}
+              className={`h-1.5 rounded-full transition-all cursor-pointer ${i === current ? "w-8 bg-[#2DD4BF]" : "w-2 bg-white/30"}`} />
           ))}
         </div>
+
         <button onClick={next}
-          className="w-full bg-[#2DD4BF] text-[#0B1F1E] rounded-2xl py-4 font-bold text-lg">
+          className="w-full border border-white/30 bg-white/10 backdrop-blur-sm text-white rounded-2xl py-4 font-semibold text-lg hover:bg-white/20 transition-all">
           {current === slides.length - 1 ? "Create My Account" : "Next"}
         </button>
       </div>

@@ -61,22 +61,18 @@ export default function App() {
     setMenuOpen(false)
   }
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0B1F1E]">
-      <div className="text-center">
-        <div className="w-20 h-20 bg-[#112221] border-2 border-[#2DD4BF]/30 rounded-3xl flex items-center justify-center mx-auto mb-4 animate-pulse">
-          <span className="text-4xl">💼</span>
-        </div>
-        <p className="text-[#2DD4BF] font-bold text-2xl tracking-wide">BizBuddy</p>
-        <p className="text-white/40 text-sm mt-2">Your business companion</p>
-        <div className="flex justify-center gap-1 mt-6">
-          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"0ms"}}></div>
-          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"150ms"}}></div>
-          <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"300ms"}}></div>
-        </div>
+ if (loading) return (
+  <div className="min-h-screen flex items-center justify-center bg-[#0B1F1E]">
+    <div className="text-center">
+      <img src="/logo-1.png" alt="BizBuddy" className="h-16 w-auto mx-auto mb-6 animate-pulse" />
+      <div className="flex justify-center gap-1 mt-4">
+        <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"0ms"}}></div>
+        <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"150ms"}}></div>
+        <div className="w-2 h-2 bg-[#2DD4BF] rounded-full animate-bounce" style={{animationDelay:"300ms"}}></div>
       </div>
     </div>
-  )
+  </div>
+)
 
   if (showOnboarding) return <Onboarding onDone={() => { localStorage.setItem("bizbuddy_onboarded","true"); setShowOnboarding(false) }} />
   if (!user) return <Auth onLogin={setUser} />
@@ -132,12 +128,25 @@ export default function App() {
 
         {/* Desktop sidebar */}
         <div className="hidden md:flex flex-col w-60 bg-white dark:bg-[#0D1A19] border-r border-gray-100 dark:border-[#1A3A38] fixed h-full py-6 px-4 overflow-y-auto">
+          
+          {/* Logo */}
           <div className="mb-6 px-2 flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-base">💼</span>
-            </div>
-            <span className="text-lg font-bold text-primary dark:text-[#2DD4BF]">BizBuddy</span>
+            <img src="/logo-1.png" alt="BizBuddy" className="h-8 w-auto" />
           </div>
+
+          {/* Profile at top */}
+          <button onClick={() => navigate("profile")}
+            className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-gray-50 dark:bg-[#112221] border border-gray-100 dark:border-[#1A3A38] mb-6 hover:bg-gray-100 dark:hover:bg-[#1A3A38] transition-all">
+            <div className="w-10 h-10 bg-primary dark:bg-[#2DD4BF] rounded-full flex items-center justify-center text-white dark:text-[#0B1F1E] font-bold text-lg">
+              {(user?.user_metadata?.name || user?.email || "U").charAt(0).toUpperCase()}
+            </div>
+            <div className="text-left flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+                {user?.user_metadata?.name || "My Profile"}
+              </p>
+              <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+            </div>
+          </button>
 
           <p className="text-xs text-gray-400 uppercase tracking-widest px-2 mb-2">Main</p>
           {mainTabs.map(tab => (
@@ -171,14 +180,7 @@ export default function App() {
 
           {/* Mobile top bar */}
           <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0D1A19] border-b border-gray-100 dark:border-[#1A3A38] sticky top-0 z-40">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-sm">💼</span>
-              </div>
-              <span className="font-bold text-primary dark:text-[#2DD4BF]">
-                {allNav.find(n => n.id === screen)?.label || "BizBuddy"}
-              </span>
-            </div>
+            <img src="/logo-1.png" alt="BizBuddy" className="h-7 w-auto" />
             <div className="flex items-center gap-2">
               <button onClick={() => setDark(!dark)} className="p-2 rounded-xl text-gray-500 dark:text-[#2DD4BF]">
                 <FontAwesomeIcon icon={dark ? faSun : faMoon} />

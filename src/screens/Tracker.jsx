@@ -106,15 +106,23 @@ export default function Tracker({ user }) {
 
         <div className="flex gap-2 mb-3">
           <button onClick={() => setType("income")}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${type === "income" ? "bg-primary dark:bg-[#2DD4BF] text-white dark:text-[#0B1F1E]" : "bg-gray-100 dark:bg-[#1A3A38] text-gray-500 dark:text-gray-400"}`}>
-            + Income
+            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              type === "income" 
+                ? "bg-[#2DD4BF] text-[#0B1F1E]" 
+                : "bg-gray-100 dark:bg-[#1A3A38] text-gray-500 dark:text-gray-400"
+            }`}>
+            ↑ Income
           </button>
           <button onClick={() => setType("expense")}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${type === "expense" ? "bg-red-500 text-white" : "bg-gray-100 dark:bg-[#1A3A38] text-gray-500 dark:text-gray-400"}`}>
-            - Expense
+            className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              type === "expense" 
+                ? "bg-red-500 text-white" 
+                : "bg-gray-100 dark:bg-[#1A3A38] text-gray-500 dark:text-gray-400"
+            }`}>
+            ↓ Expense
           </button>
         </div>
-
+        
         <input type="number" placeholder="Amount (GHS)" value={amount} onChange={e => setAmount(e.target.value)} className={`${inputClass} mb-3`} />
         <input type="text" placeholder="Description (e.g. Sold 5 dresses)" value={description} onChange={e => setDescription(e.target.value)} className={`${inputClass} mb-3`} />
 
