@@ -233,7 +233,7 @@ export default function App() {
               {allNav.find(n => n.id === screen)?.label || "Dashboard"}
             </h1>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              👋 {user?.user_metadata?.name || user?.email}
+              {user?.user_metadata?.name || user?.email}
             </span>
           </div>
 

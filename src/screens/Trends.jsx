@@ -50,7 +50,7 @@ export default function Trends({ user }) {
   })
 
   // Best days of week
-  const dayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+  const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
   const dayData = dayNames.map((day, i) => ({
     day,
     income: transactions.filter(t => new Date(t.created_at).getDay() === i && t.type === "income")
@@ -80,7 +80,7 @@ export default function Trends({ user }) {
       {bestDay.income > 0 && (
         <div className="bg-primary dark:bg-[#112221] border border-transparent dark:border-[#1A3A38] rounded-2xl p-4 mb-4">
           <p className="text-white/70 dark:text-gray-400 text-xs mb-1">Your best sales day</p>
-          <p className="text-white text-2xl font-bold">{bestDay.day}days 🏆</p>
+          <p className="text-white text-2xl font-bold">{bestDay.day}s 🏆</p>
           <p className="text-white/70 dark:text-[#2DD4BF] text-sm">GHS {bestDay.income.toLocaleString()} avg income</p>
         </div>
       )}
