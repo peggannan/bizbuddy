@@ -4,6 +4,10 @@ import { useState, useEffect, useRef } from "react"
 import { supabase } from "../supabase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMicrophone, faMicrophoneSlash, faPaperPlane, faGlobe } from "@fortawesome/free-solid-svg-icons"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
+import rehypeSanitize from 'rehype-sanitize'
 
 const languageLabels = {
   english: "English",
@@ -19,6 +23,7 @@ export default function Chat({ user, navigate }) {
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [listening, setListening] = useState(false)
+  const [shortMode, setShortMode] = useState(true)
   const [transactions, setTransactions] = useState([])
   const [orders, setOrders] = useState([])
   const [inventory, setInventory] = useState([])
@@ -80,7 +85,10 @@ export default function Chat({ user, navigate }) {
   }
 
   function buildSystemPrompt() {
-    return `You are BizBuddy, a friendly business advisor for small Ghanaian businesses. Use the user's selected response language: ${languageLabels[chatLanguage]}. Answer with practical, simple advice, and leverage data from transactions, orders, and inventory where relevant. Keep responses clear and use GHS for currency.${buildContext()}`
+    const brevity = shortMode
+      ? "Be concise: reply in 1-3 short sentences or a 3-bullet list with clear, specific actions."
+      : "Answer in a normal, helpful length with examples when useful."
+    return `You are BizBuddy, a friendly business advisor for small Ghanaian businesses. Use the user's selected response language: ${languageLabels[chatLanguage]}. ${brevity} Answer with practical, simple advice, and leverage data from transactions, orders, and inventory where relevant. Keep responses clear and use GHS for currency.${buildContext()}`
   }
 
   async function switchChatLanguage(lang) {
@@ -191,6 +199,10 @@ export default function Chat({ user, navigate }) {
                 <option key={key} value={key}>{label}</option>
               ))}
             </select>
+            <button onClick={() => setShortMode(s => !s)}
+              className="ml-2 bg-white/10 text-white/80 rounded-xl px-3 py-2 text-sm border border-white/10">
+              {shortMode ? 'Short' : 'Verbose'}
+            </button>
           </div>
         </div>
       </div>
@@ -208,7 +220,9 @@ export default function Chat({ user, navigate }) {
                 ? "bg-primary dark:bg-[#2DD4BF] text-white dark:text-[#0B1F1E]"
                 : "bg-white dark:bg-[#112221] text-gray-700 dark:text-gray-200 border border-gray-100 dark:border-[#1A3A38]"
             }`}>
-              {m.text}
+              <div className="chat-markdown prose prose-sm dark:prose-invert max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>{m.text}</ReactMarkdown>
+              </div>
             </div>
           </div>
         ))}

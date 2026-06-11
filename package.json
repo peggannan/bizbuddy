@@ -25,6 +25,12 @@
     "recharts": "^3.8.1",
     "workbox-window": "^7.4.1"
   },
+  "optionalDependencies": {
+    "react-markdown": "^8.0.7",
+    "remark-gfm": "^3.0.1",
+    "rehype-raw": "^6.1.1",
+    "rehype-sanitize": "^5.0.1"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.14",

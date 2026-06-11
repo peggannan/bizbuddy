@@ -182,3 +182,20 @@
     border-right-color: var(--border);
   }
 }
+
+/* Chat markdown list styling for clearer AI responses */
+.chat-markdown ul,
+.chat-markdown ol {
+  margin: 0.5rem 0 0.5rem 1rem;
+  padding-left: 1rem;
+}
+.chat-markdown li {
+  margin: 0.25rem 0;
+}
+.chat-markdown strong,
+.chat-markdown b {
+  font-weight: 700;
+}
+.chat-markdown p {
+  margin: 0.25rem 0;
+}

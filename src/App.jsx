@@ -36,6 +36,7 @@ export default function App() {
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("bizbuddy_onboarded"))
+  const [authMode, setAuthMode] = useState("login")
   const { t } = useTranslation()
   const { dark, setDark } = useTheme()
   const menuRef = useRef(null)
@@ -90,8 +91,12 @@ export default function App() {
   </div>
 )
 
-  if (showOnboarding) return <Onboarding onDone={() => { localStorage.setItem("bizbuddy_onboarded","true"); setShowOnboarding(false) }} />
-  if (!user) return <Auth onLogin={setUser} />
+  if (showOnboarding) return <Onboarding onDone={() => {
+    localStorage.setItem("bizbuddy_onboarded","true")
+    if (!user) setAuthMode("signup")
+    setShowOnboarding(false)
+  }} />
+  if (!user) return <Auth onLogin={setUser} authMode={authMode} />
 
   const mainTabs = [
     { id: "dashboard", icon: faChartPie, label: "Dashboard" },

@@ -1,7 +1,10 @@
 // Tools.jsx
-
 import { useState } from "react"
 import { supabase } from "../supabase"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
+import rehypeSanitize from 'rehype-sanitize'
 
 export default function Tools({ user }) {
   const [cost, setCost] = useState("")
@@ -12,6 +15,7 @@ export default function Tools({ user }) {
   const [pricingLoading, setPricingLoading] = useState(false)
   const [healthResult, setHealthResult] = useState(null)
   const [healthLoading, setHealthLoading] = useState(false)
+  const [shortMode, setShortMode] = useState(true)
 
   const inputClass = "w-full bg-gray-50 dark:bg-[#1A3A38] border border-gray-200 dark:border-[#1A3A38] text-gray-800 dark:text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary dark:focus:border-[#1DB954] placeholder-gray-400 dark:placeholder-gray-600"
 
@@ -41,16 +45,18 @@ Provide:
 1. A recommended selling price range that keeps the business competitive in Ghana.
 2. One pricing strategy to improve profit without losing customers.
 3. One quick action the owner can take today.`
+    const brevity = shortMode ? "\n\nKeep the response short: 3 concise bullet points or up to 3 short sentences." : ""
+    const finalPrompt = prompt + brevity
 
     try {
       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${import.meta.env.VITE_GROQ_KEY}` },
-        body: JSON.stringify({
+            body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [
             { role: "system", content: "You are BizBuddy, a supportive and practical business advisor for Ghanaian small businesses." },
-            { role: "user", content: prompt }
+            { role: "user", content: finalPrompt }
           ]
         })
       })
@@ -101,12 +107,14 @@ Give a friendly, encouraging business health check in 3 short points:
 2. One thing they are doing well
 3. One practical tip to improve profit
 Keep it simple, warm and relevant to a Ghanaian small business owner. Use GHS for currency.`
+    const brevity = shortMode ? "\n\nKeep the response short: 3 concise bullet points, each one sentence." : ""
+    const finalPrompt = prompt + brevity
 
     try {
       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${import.meta.env.VITE_GROQ_KEY}` },
-        body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: prompt }] })
+        body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{ role: "user", content: finalPrompt }] })
       })
       const data = await response.json()
       setHealthResult(data?.choices?.[0]?.message?.content || "Couldn't get health advice right now.")
@@ -172,7 +180,9 @@ Keep it simple, warm and relevant to a Ghanaian small business owner. Use GHS fo
               )}
               {pricingAdvice && (
                 <div className="mt-4 bg-slate-50 dark:bg-[#1E3D32] rounded-xl p-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">{pricingAdvice}</p>
+                  <div className="chat-markdown text-sm text-gray-700 dark:text-gray-200">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>{pricingAdvice}</ReactMarkdown>
+                  </div>
                 </div>
               )}
             </div>
@@ -196,7 +206,9 @@ Keep it simple, warm and relevant to a Ghanaian small business owner. Use GHS fo
               </button>
               {healthResult && (
                 <div className="mt-4 bg-amber-50 dark:bg-[#1E3D32] rounded-xl p-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">{healthResult}</p>
+                  <div className="chat-markdown text-sm text-gray-700 dark:text-gray-200">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>{healthResult}</ReactMarkdown>
+                  </div>
                 </div>
               )}
             </div>

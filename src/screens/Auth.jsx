@@ -1,12 +1,12 @@
 // Auth.jsx
 
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../supabase"
 import logo from "../assets/hero.png"
 
-export default function Auth({ onLogin }) {
-  const [mode, setMode] = useState("login")
+export default function Auth({ onLogin, authMode = "login" }) {
+  const [mode, setMode] = useState(authMode)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -22,6 +22,10 @@ export default function Auth({ onLogin }) {
   function isPasswordValid(password) {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/.test(password)
   }
+
+  useEffect(() => {
+    setMode(authMode)
+  }, [authMode])
 
   async function handleSubmit() {
     setLoading(true)
