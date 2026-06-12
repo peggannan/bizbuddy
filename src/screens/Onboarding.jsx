@@ -49,7 +49,7 @@ export default function Onboarding({ onDone }) {
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs w-full">
         {/* Icon circle */}
         <div className="w-32 h-32 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-6xl mb-10">
-          {slide.icon}
+          {slide.image}
         </div>
         
         <h1 className="text-4xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
