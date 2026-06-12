@@ -139,7 +139,7 @@ export default function App() {
   const allNav = [...mainTabs, ...menuItems]
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0] dark:bg-[#0B1F1E]">
+    <div className="min-h-screen bg-[#f4f4f0] dark:bg-[#0B1F1E]">
       {!isOnline && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-yellow-900 text-xs text-center py-1.5 font-medium">
           📡 You're offline — viewing cached data
