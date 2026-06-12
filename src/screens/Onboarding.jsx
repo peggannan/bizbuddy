@@ -1,22 +1,25 @@
 // Onboarding.jsx
 
 import { useState } from "react"
+import onboard1 from "../assets/onboard-chat.svg"
+import onboard2 from "../assets/onboard-target.svg"
+import onboard3 from "../assets/onboard-world.svg"
 
 const slides = [
   {
-    icon: "🌍",
+    image: onboard3,
     title: "Grow Your\nBusiness",
     subtitle: "BizBuddy helps market traders, food vendors, seamstresses and beauty professionals track and grow their money",
     bg: "#0B1F1E",
   },
   {
-    icon: "🎯",
+    image: onboard2,
     title: "Set Goals,\nHit Targets",
     subtitle: "Create savings goals for anything — new equipment, emergencies, expansion — and track your progress daily",
     bg: "#0D1F1C",
   },
   {
-    icon: "💬",
+    image: onboard1,
     title: "AI Business\nAdvisor",
     subtitle: "Ask BizBuddy anything in English, Twi, Ga or Ewe. Get personalised advice based on your real business data",
     bg: "#0B1E1D",
