@@ -1,9 +1,9 @@
 // Onboarding.jsx
 
 import { useState } from "react"
-import onboard1 from "../assets/onboard-chat.svg"
-import onboard2 from "../assets/onboard-target.svg"
-import onboard3 from "../assets/onboard-world.svg"
+import onboard1 from "../assets/onboard-chat.svg?url"
+import onboard2 from "../assets/onboard-target.svg?url"
+import onboard3 from "../assets/onboard-world.svg?url"
 
 const slides = [
   {
@@ -51,7 +51,7 @@ export default function Onboarding({ onDone }) {
         <div className="w-56 h-56 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-10">
           <img src={slide.image} alt="" className="w-40 h-40 object-contain" />
         </div>
-                
+        
         <h1 className="text-4xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
           {slide.title}
         </h1>
