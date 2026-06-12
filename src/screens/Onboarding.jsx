@@ -48,10 +48,10 @@ export default function Onboarding({ onDone }) {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center text-center max-w-xs w-full">
         {/* Icon circle */}
-        <div className="w-32 h-32 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-6xl mb-10">
-          {slide.image}
+        <div className="w-56 h-56 rounded-full bg-white/10 border border-white/20 flex items-center justify-center mb-10">
+          <img src={slide.image} alt="" className="w-40 h-40 object-contain" />
         </div>
-        
+                
         <h1 className="text-4xl font-bold text-white mb-5 leading-tight whitespace-pre-line">
           {slide.title}
         </h1>
